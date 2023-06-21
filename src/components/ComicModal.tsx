@@ -1,44 +1,83 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import { getAuthString } from "@/utils/marvel";
+import { Container, Grid } from "@mui/material";
 
+const marvelApiUrl = "http://gateway.marvel.com/v1/public/";
+const comicsUrl = "comics?";
 const style = {
-  position: "absolute" as "absolute",
+  height: "100%",
+  width: "100%",
   top: "50%",
   left: "50%",
-  transform: "translate(-50%, -50%)",
-  height: 400,
-  width: 400,
   bgcolor: "background.paper",
   border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
+  overflow: "scroll",
+  display: "block",
 };
 
-export default function BasicModal() {
+export default function BasicModal(props: any) {
+  const [data, setData] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  React.useEffect(() => {
+    const search = async () => {
+      const auth = getAuthString();
+      const apiUrl =
+        marvelApiUrl +
+        "characters/" +
+        props.id +
+        "/" +
+        comicsUrl +
+        `&apikey=${auth.pub_key}&ts=${auth.ts}&${auth.hash}`;
+      console.log(apiUrl);
+      //const response = await axios.get(apiUrl);
+      const response = await fetch(apiUrl);
+      const newData = await response.json();
+      setData(newData.data.results);
+      // console.log(newData.data.results);
+    };
+    const response = search();
+  }, []);
+
   return (
-    <div>
+    <>
       <Button onClick={handleOpen}>Open modal</Button>
       <Modal
+        style={{
+          overflow: "auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <img
-            width={300}
-            height={300}
-            src="http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"
-          />
-        </Box>
+        <Grid
+          onClick={(e) => {
+            setOpen(false);
+          }}
+          style={{ marginTop: "auto", width: "auto" }}
+          container
+          rowSpacing={1}
+          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        >
+          {data.map((elem) => (
+            <Grid item xs sm={6} md={3} spacing={1}>
+              <img
+                width={"auto"}
+                height={400}
+                src={elem.thumbnail.path + "." + elem.thumbnail.extension}
+              />
+            </Grid>
+          ))}
+        </Grid>
       </Modal>
-    </div>
+    </>
   );
 }
