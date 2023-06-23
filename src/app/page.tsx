@@ -6,30 +6,32 @@ import ComicModal from "@/components/ComicModal";
 import { getAuthString } from "@/utils/marvel";
 import axios from "axios";
 
+const handleSearch = async (e) => {
+  e.preventDefault();
+};
+
 export default function Home() {
-  const search = async (characterName: string) => {
+  const marvelApiUrl = "http://gateway.marvel.com/v1/public/";
+  const comicsUrl = "comics?";
+  const charactersUrl = "characters?";
+  const [data, setData] = useState([]);
+  const [character, setCharacter] = useState([]);
+  const handleSearch = async () => {};
+  const search = async () => {
     const auth = getAuthString();
     const apiUrl =
       marvelApiUrl +
       charactersUrl +
       `&apikey=${auth.pub_key}&ts=${auth.ts}&hash=${auth.hash}` +
-      `&name=${characterName}`;
-
+      `&nameStartsWith=Spider`;
     console.log(apiUrl);
     const response = await axios.get(apiUrl);
     setData(response.data.data.results);
     console.log(response.data.data.results);
   };
 
-  const marvelApiUrl = "http://gateway.marvel.com/v1/public/";
-  const comicsUrl = "comics?";
-  const charactersUrl = "characters?";
-  const [data, setData] = useState([]);
-  const [characterName, setCharacter] = useState("Doctor Strange");
-  const handleSearch = async () => {};
-
   useEffect(() => {
-    const response = search(characterName);
+    const response = search();
   }, []);
 
   return (

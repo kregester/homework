@@ -4,6 +4,7 @@ import Modal from "@mui/material/Modal";
 import { getAuthString } from "@/utils/marvel";
 import { Container, Grid } from "@mui/material";
 import axios from "axios";
+import { useEffect } from "react";
 
 const marvelApiUrl = "http://gateway.marvel.com/v1/public/";
 const comicsUrl = "comics?";
@@ -24,7 +25,7 @@ export default function BasicModal(props: any) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const search = async () => {
       const auth = getAuthString();
       const apiUrl =
@@ -38,7 +39,6 @@ export default function BasicModal(props: any) {
       const response = await axios.get(apiUrl);
       setData(response.data.data.results);
       console.log(response.data.data.results);
-      // console.log(newData.data.results);
     };
     const response = search();
   }, []);
