@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import { getAuthString } from "@/utils/marvel";
 import { Container, Grid } from "@mui/material";
+import axios from "axios";
 
 const marvelApiUrl = "http://gateway.marvel.com/v1/public/";
 const comicsUrl = "comics?";
@@ -32,12 +33,11 @@ export default function BasicModal(props: any) {
         props.id +
         "/" +
         comicsUrl +
-        `&apikey=${auth.pub_key}&ts=${auth.ts}&${auth.hash}`;
+        `&apikey=${auth.pub_key}&ts=${auth.ts}&hash=${auth.hash}`;
       console.log(apiUrl);
-      //const response = await axios.get(apiUrl);
-      const response = await fetch(apiUrl);
-      const newData = await response.json();
-      setData(newData.data.results);
+      const response = await axios.get(apiUrl);
+      setData(response.data.data.results);
+      console.log(response.data.data.results);
       // console.log(newData.data.results);
     };
     const response = search();

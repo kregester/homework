@@ -6,5 +6,5 @@ export const getAuthString = () => {
   const ts = Date.now();
   //md5(ts+privateKey+publicKey)
   const hash = Md5.hashStr(ts + p_key + pub_key);
-  return { pub_key, p_key, ts, hash: `hash=${hash}` };
+  return { pub_key, p_key, ts, hash };
 };
